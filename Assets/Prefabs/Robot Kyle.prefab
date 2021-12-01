@@ -201,6 +201,7 @@ GameObject:
   - component: {fileID: 8861861314735723196}
   - component: {fileID: 8861861314735723194}
   - component: {fileID: 8861861314735723193}
+  - component: {fileID: 4343952570631266515}
   m_Layer: 0
   m_Name: Robot Kyle
   m_TagString: Enemy
@@ -678,6 +679,9 @@ MonoBehaviour:
   weapon: {fileID: 8861861314784604557}
   attakSound: {fileID: 8861861314735723196}
   jumpSound: {fileID: 8861861314735723199}
+  deathFinish:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8861861314735723193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -693,6 +697,26 @@ MonoBehaviour:
   health: 50
   hitSound: {fileID: 8861861314735723192}
   deathSound: {fileID: 8861861314735723195}
+  healthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  death:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4343952570631266515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709962352630881799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5440430b0fb204a4fa932a5efe782141, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minChance: 10
+  maxChance: 90
 --- !u!1 &1004675146221341632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2258,6 +2282,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!65 &8861861314784604545
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6497177453778180724}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 0.37392753, y: 0.728489, z: 0.060491633}
+  m_Center: {x: -0.0031981773, y: 0.19418213, z: -0.00076286367}
 --- !u!64 &8861861314784604547
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2272,19 +2309,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -2372584552947546636, guid: 439a532aec13bc04e85ea9ffb8759869, type: 3}
---- !u!65 &8861861314784604545
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6497177453778180724}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 0.37392753, y: 0.728489, z: 0.060491633}
-  m_Center: {x: -0.0031981773, y: 0.19418213, z: -0.00076286367}
 --- !u!82 &8861861314784604551
 AudioSource:
   m_ObjectHideFlags: 0

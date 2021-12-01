@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class EnemyMovement : MonoBehaviour
     public Damage heavyAttackDamage;
     public Weapon weapon;
     public AudioSource attakSound, jumpSound;
+    public UnityEvent deathFinish;
 
     // private variables
     float attackCD = 0f;
@@ -35,6 +37,7 @@ public class EnemyMovement : MonoBehaviour
     Transform player;
     Animator animator;
     Health health;
+    EnemyAdaptation adaptation;
 
 
     // Start is called before the first frame update
@@ -43,6 +46,8 @@ public class EnemyMovement : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
         health = GetComponent<Health>();
+        health.death.AddListener(Death);
+        adaptation = GetComponent<EnemyAdaptation>();
         ActDecision();
     }
 
@@ -202,7 +207,7 @@ public class EnemyMovement : MonoBehaviour
         // Receive damage
         if (!health.SurviveDamage(damage.damage))
         {
-
+            return;
         }
         animator.SetTrigger("Hit");
         interupable = false;
@@ -385,5 +390,22 @@ public class EnemyMovement : MonoBehaviour
         float sinAngle = Mathf.Sin(angle);
         Vector3 rotated = new Vector3(vector.x * cosAngle - vector.z * sinAngle, vector.y, vector.x * sinAngle + vector.z * cosAngle);
         return rotated;
+    }
+
+    public void Death()
+    {
+        animator.SetTrigger("Death");
+    }
+
+    public void DeathDone()
+    {
+        deathFinish?.Invoke();
+    }
+
+    public void AdjustChance()
+    {
+        lightAttackChance = adaptation.AdjustAttackType();
+        blockChance = adaptation.AdjustReactType();
+        adaptation.ResetCount();
     }
 }

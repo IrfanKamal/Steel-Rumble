@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public Weapon weapon;
     public AudioSource attackSound;
     public AudioSource jumpSound;
+    public UnityEvent deathFinish;
 
     // Private Variables
     bool canMove = true;
@@ -29,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     Coroutine dodging = null;
     Coroutine attackSqCD = null;
     Health health;
+    EnemyAdaptation enemyAdaptation;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
         enemy = GameObject.FindGameObjectWithTag("Enemy").transform;
         enemyScript = enemy.GetComponent<EnemyMovement>();
         health = GetComponent<Health>();
+        health.death.AddListener(Death);
+        enemyAdaptation = enemy.GetComponent<EnemyAdaptation>();
     }
 
     // Update is called once per frame
@@ -77,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 enemyScript.ReactDecision();
+                enemyAdaptation.CountPlayerAttack(attackSq);
                 animator.SetBool("Walking", false);
                 canMove = false;
                 canAttack = false;
@@ -96,6 +102,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetMouseButtonDown(1))
             {
                 enemyScript.ReactDecision();
+                enemyAdaptation.CountPlayerAttack(attackSq);
                 animator.SetBool("Walking", false);
                 canMove = false;
                 canAttack = false;
@@ -250,6 +257,7 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("Walking", false);
             weaponDamage = false;
             weapon.StopDamage();
+            enemyAdaptation.CountAttackHit(damage.blockable);
             if (dodging != null)
             {
                 StopCoroutine(dodging);
@@ -258,7 +266,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (!health.SurviveDamage(damage.damage))
             {
-
+                return;
             }
             animator.SetTrigger("Hit");
         }
@@ -279,5 +287,15 @@ public class PlayerMovement : MonoBehaviour
         }
         canMove = true;
         canAttack = true;
+    }
+
+    public void Death()
+    {
+        animator.SetTrigger("Death");
+    }
+
+    public void DeathDone()
+    {
+        deathFinish?.Invoke();
     }
 }
