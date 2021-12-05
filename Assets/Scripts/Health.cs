@@ -10,8 +10,8 @@ public class Health : MonoBehaviour
     public UnityEvent<int> healthChange;
     public UnityEvent death;
 
-
-    int currentHealth;
+    [HideInInspector]
+    public int currentHealth;
     // Start is called before the first frame update
     void Start()
     {

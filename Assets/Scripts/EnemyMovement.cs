@@ -193,7 +193,7 @@ public class EnemyMovement : MonoBehaviour
         if (isBlocking && damage.blockable)
         {
             animator.SetTrigger("BlockHit");
-            currentBehaviour = StartCoroutine(KnockingBack(damage.knockback, damage.knockbackTime));
+            StartCoroutine(KnockingBack(damage.knockback, damage.knockbackTime));
             return;
         }
         // Stop current movement
@@ -211,7 +211,7 @@ public class EnemyMovement : MonoBehaviour
         }
         animator.SetTrigger("Hit");
         interupable = false;
-        currentBehaviour = StartCoroutine(KnockingBack(damage.knockback, damage.knockbackTime));
+        StartCoroutine(KnockingBack(damage.knockback, damage.knockbackTime));
     }
 
     IEnumerator KnockingBack(float speed, float time)
@@ -226,8 +226,6 @@ public class EnemyMovement : MonoBehaviour
             currentTime -= Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
-        movementCD = movementCoolD;
-        currentBehaviour = StartCoroutine(MovementCoolingDown());
     }
 
     public void AfterDamage()
