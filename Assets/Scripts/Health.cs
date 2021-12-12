@@ -26,13 +26,13 @@ public class Health : MonoBehaviour
         healthChange?.Invoke(currentHealth);
         if (currentHealth > 0)
         {
-            hitSound.Play();
+            //hitSound.Play();
             return true;
         }
         else
         {
             death?.Invoke();
-            deathSound.Play();
+            //deathSound.Play();
             return false;
         }
     }
