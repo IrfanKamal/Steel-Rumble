@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody))]
 public class MovementChar : MonoBehaviour
 {
+    /* Base Clas for Characters */
+
     // Public Variables
     public bool canMove;
     public float moveSpeedMulti = 1;
@@ -29,6 +32,10 @@ public class MovementChar : MonoBehaviour
     public GameObject heavyAttackParticle;
     public float heavyAttackParTime;
 
+    [Header("Audio")]
+    public AudioSource blockSound;
+    public AudioSource hitSound, deathSound;
+
     // Private Variables
     protected Behaviour currentBehaviour;
     protected int attackSqCD = 0;
@@ -40,6 +47,8 @@ public class MovementChar : MonoBehaviour
     public bool interupable = true;
     protected bool isDeath = false;
     protected int attackSq = 1;
+    [HideInInspector]
+    public UnityEvent<string> deathDone;
 
     // Component
     [HideInInspector]
@@ -58,7 +67,9 @@ public class MovementChar : MonoBehaviour
     protected readonly int blockHitPar = Animator.StringToHash("BlockHit");
     protected readonly int hitPar = Animator.StringToHash("Hit");
     protected readonly int deathPar = Animator.StringToHash("Death");
+    protected readonly int idlePar = Animator.StringToHash("Idle");
 
+    // Initiation Method
     protected virtual void Awake()
     {
         health = GetComponent<Health>();
@@ -69,6 +80,7 @@ public class MovementChar : MonoBehaviour
         CreateWeaponLocationDictionary();
     }
 
+    // Create Dictionary for Weapon location
     protected virtual void CreateWeaponLocationDictionary()
     {
         weaponsDic = new Dictionary<WeaponType, Transform>();
@@ -78,11 +90,13 @@ public class MovementChar : MonoBehaviour
         }
     }
 
+    // Change whether the characters can be interupted or not
     public virtual void ChangeInterupable(bool change)
     {
         interupable = change;
     }
 
+    // Method to start walking
     public virtual void StartWalk()
     {
         if (!animator.GetBool(walkingPar))
@@ -91,11 +105,13 @@ public class MovementChar : MonoBehaviour
         }
     }
 
+    // Method to stop walking
     public virtual void StopWalk()
     {
         animator.SetBool(walkingPar, false);
     }
 
+    // Method to start light attack
     public virtual void LightAttack()
     {
         if (weapon && interupable)
@@ -104,6 +120,7 @@ public class MovementChar : MonoBehaviour
         }
     }
 
+    // Method to start heavy attack
     public virtual void HeavyAttack()
     {
         if (weapon && interupable)
@@ -112,9 +129,10 @@ public class MovementChar : MonoBehaviour
         }
     }
 
+    // Method that called whenever the character went into attack animation
     public virtual void AttackStart(int attackSq)
     {
-        StopCor(coroutines[attackSqCD]);
+        coroutines[attackSqCD] = StopCor(coroutines[attackSqCD]);
         this.attackSq = attackSq;
         if (attackSq < 4)
         {
@@ -128,6 +146,7 @@ public class MovementChar : MonoBehaviour
         }
     }
 
+    // Coroutine for summoning particle whenever the character start heavy attack
     protected virtual IEnumerator HeavyAttackParticle()
     {
         heavyAttackParticle.SetActive(true);
@@ -136,39 +155,45 @@ public class MovementChar : MonoBehaviour
         coroutines[heavyAttackParticleCor] = null;
     }
 
+    // Method for return to idle from attack
     public virtual void ReturnAttack()
     {
         animator.SetTrigger(returnAttackPar);
     }
 
+    // Method to start blocking
     public virtual void StartBlock()
     {
         if (interupable)
         {
-            StopCor(coroutines[attackSqCD]);
+            coroutines[attackSqCD] = StopCor(coroutines[attackSqCD]);
             animator.SetBool(blockingPar, true);
         }
     }
 
+    // Method to stop blocking
     public virtual void StopBlock()
     {
         animator.SetBool(blockingPar, false);
     }
 
+    // Method to call character to jump
     public virtual void Jump()
     {
         if (interupable)
         {
-            StopCor(coroutines[attackSqCD]);
+            coroutines[attackSqCD] = StopCor(coroutines[attackSqCD]);
             animator.SetTrigger(jumpPar);
         }
     }
 
+    // Method when character start jumping
     public virtual void StartJump()
     {
         
     }
 
+    // Method for moving character when jumping
     protected virtual IEnumerator Jumping(Vector3 moveDir)
     {
         float time = FrametoSeconds.FrametoSecond(jumpFrame, 30);
@@ -181,6 +206,7 @@ public class MovementChar : MonoBehaviour
         coroutines[jumping] = null;
     }
 
+    // Method whenever the character get hit
     public virtual void GetHit(Damage damage, Vector3 source)
     {
         if (!isDeath)
@@ -193,6 +219,7 @@ public class MovementChar : MonoBehaviour
             if (animator.GetBool(blockingPar) && damage.blockable)
             {
                 animator.SetTrigger(blockHitPar);
+                blockSound.Play();
             }
             else
             {
@@ -201,12 +228,18 @@ public class MovementChar : MonoBehaviour
         }
     }
 
+    // Method whenever the character get damage
     public virtual void GetDamage(Damage damage, Vector3 knockDir)
     {
         StopCor();
+        if (heavyAttackParticle.activeSelf)
+        {
+            heavyAttackParticle.SetActive(false);
+        }
         weapon.DisruptAttack();
         if (health.SurviveDamage(damage.damage))
         {
+            hitSound.Play();
             if (heavyAttackParticle.activeSelf == true)
             {
                 heavyAttackParticle.SetActive(false);
@@ -217,12 +250,14 @@ public class MovementChar : MonoBehaviour
         }
         else
         {
+            deathSound.Play();
             canMove = false;
             isDeath = true;
             animator.SetTrigger(deathPar);
         }
     }
 
+    // Method for moving character when get damage
     protected virtual IEnumerator KnockingBack(Damage damage, Vector3 knockDir)
     {
         float time = damage.knockbackTime;
@@ -235,6 +270,7 @@ public class MovementChar : MonoBehaviour
         coroutines[knockedBack] = null;
     }
 
+    // Method when attack animation finished
     public virtual void AttackDone()
     {
         coroutines[attackSqCD] = AttackSqCD();
@@ -242,6 +278,7 @@ public class MovementChar : MonoBehaviour
         interupable = true;
     }
 
+    // Coroutine for holding characters animation attack
     protected virtual IEnumerator AttackSqCD()
     {
         yield return new WaitForSeconds(attackSqCDTime);
@@ -249,6 +286,7 @@ public class MovementChar : MonoBehaviour
         ReturnAttack();
     }
 
+    // Method to stop all coroutines
     protected void StopCor()
     {
         for (int i = 0; i < coroutines.Count; i++)
@@ -261,15 +299,17 @@ public class MovementChar : MonoBehaviour
         }
     }
 
-    protected void StopCor(IEnumerator coroutine)
+    // Method to stop a spesific coroutine
+    protected IEnumerator StopCor(IEnumerator coroutine)
     {
         if (coroutine != null)
         {
             StopCoroutine(coroutine);
-            coroutine = null;
         }
+        return null;
     }
 
+    // Method when the character died
     public virtual void Death()
     {
         StopCor();
@@ -278,8 +318,43 @@ public class MovementChar : MonoBehaviour
         canMove = false;
         animator.SetTrigger(deathPar);
     }
+
+    // Method to reset animator parameters
+    protected virtual void ResetParameters()
+    {
+        if (animator.GetBool(walkingPar))
+        {
+            animator.SetBool(walkingPar, false);
+        }
+        if (animator.GetBool(blockingPar))
+        {
+            animator.SetBool(blockingPar, false);
+        }
+        attackSq = 1;
+    }
+
+    // Method to stop character from moving
+    public virtual void StopMove()
+    {
+        canMove = false;
+        ResetParameters();
+        animator.SetTrigger(idlePar);
+    }
+
+    // Method to start character movement
+    public virtual void StartMove()
+    {
+        canMove = true;
+    }
+
+    // Method when character finished the death animation
+    public virtual void DeathDone()
+    {
+        deathDone?.Invoke(tag);
+    }
 }
 
+// Class for changing frame into seconds
 public static class FrametoSeconds
 {
     public static float FrametoSecond(int frame, int fps)

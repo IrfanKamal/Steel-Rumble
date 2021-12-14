@@ -5,14 +5,19 @@ using UnityEngine.Events;
 
 public class MovementPlayer : MovementChar
 {
-    [HideInInspector]
-    public UnityEvent attack;
+    // Class for character that can be controlled by player
 
-    Camera camera;
+    // Event for enemy adaptation
+    [HideInInspector]
+    public UnityEvent<int> attack;
+    [HideInInspector]
+    public UnityEvent<bool> getDamage;
+
+    Camera cameraMain;
 
     private void Start()
     {
-        camera = Camera.main;
+        cameraMain = Camera.main;
     }
 
     private void Update()
@@ -23,6 +28,7 @@ public class MovementPlayer : MovementChar
         }
     }
 
+    // Control player input
     void MovementInput()
     {
         Vector3 kbDir = KeyboardDirection();
@@ -58,12 +64,13 @@ public class MovementPlayer : MovementChar
         {
             StopBlock();
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        /*if (Input.GetKeyDown(KeyCode.P))
         {
             GetHit(new Damage { blockable = true, damage = 10, knockback = 60f, knockbackTime = 1f }, transform.position + Vector3.back);
-        }
+        }*/
     }
 
+    // To Rotate character
     void RotateCharacter(Vector3 direction)
     {
         float angle = Mathf.Atan(direction.x / direction.z) * Mathf.Rad2Deg;
@@ -72,12 +79,14 @@ public class MovementPlayer : MovementChar
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 
+    // Initiate start jumping
     public override void StartJump()
     {
         coroutines[jumping] = Jumping(KeyboardDirection());
         StartCoroutine(coroutines[jumping]);
     }
 
+    // To see where the keyboard direction
     Vector3 KeyboardDirection()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -85,19 +94,28 @@ public class MovementPlayer : MovementChar
         return new Vector3(horizontal, 0f, vertical).normalized;
     }
 
+    // Starting the attack
     public override void AttackStart(int attackSq)
     {
         base.AttackStart(attackSq);
-        attack?.Invoke();
+        attack?.Invoke(attackSq);
         if (weapon.weaponType == WeaponType.Bow)
         {
             FaceMouse();
         }
     }
 
+    // when get damage
+    public override void GetDamage(Damage damage, Vector3 knockDir)
+    {
+        base.GetDamage(damage, knockDir);
+        getDamage?.Invoke(damage.blockable);
+    }
+
+    // Rotate position toward mouse when using bow
     protected virtual void FaceMouse()
     {
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = cameraMain.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {

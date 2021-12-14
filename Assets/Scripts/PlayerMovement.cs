@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // NOT USED
     // Variables
     public float moveSpeed;
     public float attakSqTime;
@@ -40,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
         enemy = GameObject.FindGameObjectWithTag("Enemy").transform;
         enemyScript = enemy.GetComponent<EnemyMovement>();
         health = GetComponent<Health>();
-        health.death.AddListener(Death);
+        //health.death.AddListener(Death);
         enemyAdaptation = enemy.GetComponent<EnemyAdaptation>();
     }
 

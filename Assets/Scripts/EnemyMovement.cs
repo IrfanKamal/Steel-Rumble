@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class EnemyMovement : MonoBehaviour
 {
+    // NOT USED
     // Variables
     public float walkSpeed;
     public float behaviourTime;
@@ -46,7 +47,7 @@ public class EnemyMovement : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
         health = GetComponent<Health>();
-        health.death.AddListener(Death);
+        //health.death.AddListener(Death);
         adaptation = GetComponent<EnemyAdaptation>();
         ActDecision();
     }

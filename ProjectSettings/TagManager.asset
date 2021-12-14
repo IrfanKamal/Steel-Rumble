@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - ObjectPool
+  - WeaponStash
   layers:
   - Default
   - TransparentFX

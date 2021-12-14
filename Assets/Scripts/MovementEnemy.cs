@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MovementEnemy : MovementChar
 {
+    // Class for enemy characters
+
+    // Enemy exclusives variables
     [Header("Enemy Exclusives")]
     public float lightAttackCD;
     public float heavyAttackCD;
@@ -34,22 +37,7 @@ public class MovementEnemy : MovementChar
         playerScript.attack.AddListener(ReactAttack);
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            if (!canMove)
-            {
-                canMove = true;
-                ChangeInterupable(true);
-            }
-            else
-            {
-                canMove = false;
-            }
-        }
-    }
-
+    // Set where is the player
     public void AssignPlayer(MovementPlayer player)
     {
         playerScript = player;
@@ -102,19 +90,6 @@ public class MovementEnemy : MovementChar
         ResetParameters();
     }
 
-    void ResetParameters()
-    {
-        if (animator.GetBool(walkingPar))
-        {
-            animator.SetBool(walkingPar, false);
-        }
-        if (animator.GetBool(blockingPar))
-        {
-            animator.SetBool(blockingPar, false);
-        }
-        attackSq = 1;
-    }
-
     public override void StartJump()
     {
         Vector3 playerPos = new Vector3(player.position.x, transform.position.y, player.position.z);
@@ -125,7 +100,8 @@ public class MovementEnemy : MovementChar
         StartCoroutine(coroutines[jumping]);
     }
 
-    public void ReactAttack()
+    // Method to react when player is attacking
+    public void ReactAttack(int attackSq)
     {
         if (interupable && Vector3.Distance(transform.position, player.position) < playerScript.minimDistance && canMove)
         {
@@ -147,6 +123,7 @@ public class MovementEnemy : MovementChar
         }
     }
 
+    // Coroutine for how long the character will be blocking
     IEnumerator Blocking()
     {
         animator.SetBool(blockingPar, true);
@@ -155,6 +132,7 @@ public class MovementEnemy : MovementChar
         coroutines[curBehaviour] = null;
     }
 
+    // Method to decide what to do
     void ActDecision()
     {
         if (Vector3.Distance(transform.position, player.position) < minimDistance)
@@ -174,6 +152,7 @@ public class MovementEnemy : MovementChar
         }
     }
 
+    // Method to decide what movement to do
     void MovementDecision(bool inDistance)
     {
         if (inDistance)
@@ -188,6 +167,7 @@ public class MovementEnemy : MovementChar
         }
     }
 
+    // Method to decide what attack to do
     void AttackDecision()
     {
         FacePlayer();
@@ -201,6 +181,7 @@ public class MovementEnemy : MovementChar
         }
     }
 
+    // Method to cooldown after attack
     IEnumerator AttackCD(float cd)
     {
         canAttack = false;
@@ -208,6 +189,7 @@ public class MovementEnemy : MovementChar
         canAttack = true;
     }
 
+    // Method to draw chance
     bool GetChance(int chance)
     {
         int random = Random.Range(0, 100);
@@ -221,6 +203,7 @@ public class MovementEnemy : MovementChar
         }
     }
 
+    // Method to face the player
     void FacePlayer()
     {
         Vector3 playerPos = new Vector3(player.position.x, transform.position.y, player.position.z);
@@ -233,6 +216,7 @@ public class MovementEnemy : MovementChar
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 
+    // Coroutine behaviour to move toward player
     IEnumerator MoveTowardPlayer()
     {
         float time = minimMoveTowardPlayer;
@@ -247,6 +231,7 @@ public class MovementEnemy : MovementChar
         coroutines[curBehaviour] = null;
     }
 
+    // Coroutine behaviour to walk sideways from player
     IEnumerator WalkSideWays()
     {
         float time = walkSideWayTime;
@@ -278,6 +263,13 @@ public class MovementEnemy : MovementChar
         coroutines[curBehaviour] = null;
     }
 
+    public override void StartMove()
+    {
+        base.StartMove();
+        ActDecision();
+    }
+
+    // Method to rotate a vector at x and z
     Vector3 RotateVectorXZ(Vector3 vector, float angle)
     {
         float cosAngle = Mathf.Cos(angle);

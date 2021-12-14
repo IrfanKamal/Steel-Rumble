@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class HeavyAttackParticle : MonoBehaviour
 {
+    // Class for controlling the heavy attack particle
+
+    // Variables
     [HideInInspector]
     public MeleeWeapon weapon;
     bool damaging;
@@ -11,38 +14,43 @@ public class HeavyAttackParticle : MonoBehaviour
     float colliderZ;
     public float particleTime;
     public float colliderSpeed;
-    public SphereCollider collider;
+    public SphereCollider sphereCollider;
 
+    // When the object get enabled
     private void OnEnable()
     {
         damaging = true;
-        collider.center = new Vector3(0f, 0f, colliderZ);
-        collider.enabled = true;
+        sphereCollider.center = new Vector3(0f, 0f, colliderZ);
+        sphereCollider.enabled = true;
         StartCoroutine(MovingCollider());
     }
 
     private void Start()
     {
-        colliderZ = collider.center.z;
+        colliderZ = sphereCollider.center.z;
     }
 
+    // Coroutine to move the collider
     IEnumerator MovingCollider()
     {
         float time = particleTime;
         while (time > 0f)
         {
-            collider.center = new Vector3(collider.center.x + colliderSpeed * Time.fixedDeltaTime, 0f, colliderZ);
+            sphereCollider.center = new Vector3(sphereCollider.center.x + colliderSpeed * Time.fixedDeltaTime, 0f, colliderZ);
             time -= Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
-        collider.enabled = false;
+        sphereCollider.enabled = false;
     }
+
+    // Method to assign the target for the particle
     public void AssignParticle(MeleeWeapon weapon)
     {
         this.weapon = weapon;
         targetTag = weapon.targetTag;
     }
 
+    // When the particle hit the target
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(targetTag) && damaging)

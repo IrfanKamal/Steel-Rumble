@@ -33672,7 +33672,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   particleTime: 1
   colliderSpeed: 9.3
-  collider: {fileID: 30476510566459476}
+  sphereCollider: {fileID: 30476510566459476}
 --- !u!114 &7770420277054012613
 MonoBehaviour:
   m_ObjectHideFlags: 0

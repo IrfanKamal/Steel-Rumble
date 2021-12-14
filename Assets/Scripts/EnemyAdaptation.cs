@@ -4,23 +4,13 @@ using UnityEngine;
 
 public class EnemyAdaptation : MonoBehaviour
 {
+    // Class for enemy movement adaptation
+
+    // variables
     public int minChance, maxChance;
     int lightAttackHitCount, heavyAttackHitCount, playerLightAttackCount, playerHeavyAttackCount;
 
-    EnemyMovement mainScript;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        mainScript = GetComponent<EnemyMovement>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // To reset the count
     public void ResetCount()
     {
         lightAttackHitCount = 0;
@@ -29,6 +19,7 @@ public class EnemyAdaptation : MonoBehaviour
         playerHeavyAttackCount = 0;
     }
 
+    // Counting what the player did
     public void CountPlayerAttack(int attackSq)
     {
         if (attackSq < 4)
@@ -37,6 +28,7 @@ public class EnemyAdaptation : MonoBehaviour
             playerHeavyAttackCount++;
     }
 
+    // Counting when player got hit
     public void CountAttackHit(bool blockable)
     {
         if (blockable)
@@ -45,6 +37,7 @@ public class EnemyAdaptation : MonoBehaviour
             heavyAttackHitCount++;
     }
 
+    // Adjusting what attack to do
     public int AdjustAttackType()
     {
         if (lightAttackHitCount > 0 || heavyAttackHitCount > 0)
@@ -62,6 +55,7 @@ public class EnemyAdaptation : MonoBehaviour
             return 50;
     }
 
+    // Adjusting what reaction to do
     public int AdjustReactType()
     {
         if (playerHeavyAttackCount > 0 || playerLightAttackCount > 0)

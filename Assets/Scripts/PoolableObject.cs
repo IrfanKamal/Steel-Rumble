@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PoolableObject : MonoBehaviour
 {
+    // Class for the object that can be put in the object pool
     [HideInInspector]
     public ObjectPool thePool;
 

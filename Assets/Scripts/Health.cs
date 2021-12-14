@@ -5,10 +5,13 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
+    // Class for character's health
+
+    // Variabels
     public int health;
     public AudioSource hitSound, deathSound;
     public UnityEvent<int> healthChange;
-    public UnityEvent death;
+    //public UnityEvent death;
 
     [HideInInspector]
     public int currentHealth;
@@ -18,6 +21,7 @@ public class Health : MonoBehaviour
         currentHealth = health;
     }
 
+    // Calculating whether the characters survive
     public bool SurviveDamage(int damage)
     {
         currentHealth -= damage;
@@ -31,7 +35,7 @@ public class Health : MonoBehaviour
         }
         else
         {
-            death?.Invoke();
+            //death?.Invoke();
             //deathSound.Play();
             return false;
         }

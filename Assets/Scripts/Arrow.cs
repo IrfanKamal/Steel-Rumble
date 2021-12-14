@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
+    // Class for controlling the arrow
+
+    // Variables
     public float moveSpeed;
     public float flyTime;
     public ObjectPool heavyAttackParticlePool;
@@ -31,6 +34,7 @@ public class Arrow : MonoBehaviour
         }
     }
 
+    // Decide where to move
     public void DetermineMoveDir()
     {
         float angle = transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
@@ -42,6 +46,7 @@ public class Arrow : MonoBehaviour
         StartCoroutine(Flying());
     }
 
+    // Coroutine for start moving
     IEnumerator Flying()
     {
         rb.velocity = moveDir * moveSpeed;
@@ -50,6 +55,7 @@ public class Arrow : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    // When hit the target
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(targetTag))

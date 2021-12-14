@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
+    // Class for create and controlling object pooling
+
+    // variables
     public string objectName;
     [SerializeField]
     public List<PoolableObject> gameObjects;
@@ -19,6 +22,7 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+    // When a class request the object
     public GameObject RequestObject()
     {
         PoolableObject requested;
@@ -36,6 +40,7 @@ public class ObjectPool : MonoBehaviour
         return requested.gameObject;
     }
 
+    // When the object done being used
     public void ReturnToPool(PoolableObject gameObject)
     {
         objects.Push(gameObject);

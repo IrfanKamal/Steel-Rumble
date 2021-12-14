@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MeleeWeapon : WeaponBase
 {
+    // Class for melee weapons
+
+    // Variables
     [Header("Melee Weapons Exclusives")]
     [SerializeField]
     public int[] attackLength;
@@ -11,7 +14,6 @@ public class MeleeWeapon : WeaponBase
     public float heavyAttackRotationOffset;
     public Transform impactPoint;
 
-    //IEnumerator currentAttack;
 
     protected override void Start()
     {
@@ -28,6 +30,7 @@ public class MeleeWeapon : WeaponBase
         }
     }
 
+    // Melee weapon light attack
     public override void LightAttack(int attackSq)
     {
         base.LightAttack(attackSq);
@@ -37,12 +40,15 @@ public class MeleeWeapon : WeaponBase
         StartCoroutine(currentAttack);
     }
 
+    // Melee weapon heavy attack
     public override void HeavyAttack()
     {
         base.HeavyAttack();
         currentAttack = HeavyAttackDelay();
         StartCoroutine(currentAttack);
     }
+
+    // Coroutine to count the delay from light attack
     IEnumerator LightAttackDelay(float delay, float length)
     {
         yield return new WaitForSeconds(delay);
@@ -52,6 +58,7 @@ public class MeleeWeapon : WeaponBase
         currentAttack = null;
     }
 
+    // Coroutine to count the delay from heavy attack
     IEnumerator HeavyAttackDelay()
     {
         float delay = FrametoSeconds.FrametoSecond(attackDelay[3], 30);

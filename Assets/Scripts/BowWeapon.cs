@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class BowWeapon : WeaponBase
 {
-    //IEnumerator currentAttack;
+    // Class for controlling bow weapon
+
+    // variables
     public ObjectPool arrowPool;
     public Transform impactPoint;
 
@@ -23,6 +25,7 @@ public class BowWeapon : WeaponBase
         }
     }
 
+    // Light Attack
     public override void LightAttack(int attackSq)
     {
         base.LightAttack(attackSq);
@@ -31,6 +34,7 @@ public class BowWeapon : WeaponBase
         StartCoroutine(currentAttack);
     }
 
+    // Heavy attack
     public override void HeavyAttack()
     {
         base.HeavyAttack();
@@ -39,6 +43,7 @@ public class BowWeapon : WeaponBase
         StartCoroutine(currentAttack);
     }
 
+    // Coroutine to count the attack delay
     IEnumerator AttackDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -46,6 +51,7 @@ public class BowWeapon : WeaponBase
         currentAttack = null;
     }
 
+    // Method to spawn the arrow
     void SpawnArrow()
     {
         Transform arrow = arrowPool.RequestObject().transform;

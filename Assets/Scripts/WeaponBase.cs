@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WeaponBase : MonoBehaviour
 {
+    // Class for the base of a weapon
+
     // Public parameters
     public RuntimeAnimatorController animationStyle;
     public WeaponType weaponType;
@@ -42,29 +44,33 @@ public class WeaponBase : MonoBehaviour
         coroutines = new List<IEnumerator>();
     }
 
+    // Method to assign the weapon to characters
     public virtual void AssignWeapon(MovementChar model)
     {
         if (weaponType != WeaponType.Shield)
         {
-            user = model;
             targetTag = model.enemyTag;
             model.weapon = this;
             model.animator.runtimeAnimatorController = animationStyle;
             model.minimDistance = minimDistance;
         }
+        user = model;
         position = model.weaponsDic[weaponType];
     }
 
+    // Method to start light attack
     public virtual void LightAttack(int attackSq)
     {
         currentAttackSq = attackSq;
     }
 
+    // Method to start heavy attack
     public virtual void HeavyAttack()
     {
         currentAttackSq = 4;
     }
 
+    // When the weapon hit the target
     protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(targetTag) && damaging)
@@ -75,6 +81,7 @@ public class WeaponBase : MonoBehaviour
         }
     }
 
+    // Deal damage to the target
     public virtual void DealDamage(MovementChar target, Vector3 source)
     {
         if (currentAttackSq < 4)
@@ -86,14 +93,20 @@ public class WeaponBase : MonoBehaviour
             target.GetHit(heavyAttackDamage, source);
         }
     }
-
+    
+    // Method to remove weapon from player
     public virtual void DeassignWeapon()
     {
-        user = null;
+        if (user)
+        {
+            user.weapon = null;
+            user = null;
+        }
         targetTag = "";
         position = null;
     }
 
+    // Method when attack got disrupted
     public virtual void DisruptAttack()
     {
         damaging = false;
@@ -105,26 +118,6 @@ public class WeaponBase : MonoBehaviour
         //StopCor();
     }
 
-    protected void StopCor()
-    {
-        for (int i = 0; i < coroutines.Count; i++)
-        {
-            if (coroutines[i] != null)
-            {
-                StopCoroutine(coroutines[i]);
-                coroutines[i] = null;
-            }
-        }
-    }
-
-    protected void StopCor(IEnumerator coroutine)
-    {
-        if (coroutine != null)
-        {
-            StopCoroutine(coroutine);
-            coroutine = null;
-        }
-    }
 }
 
 public enum WeaponType
