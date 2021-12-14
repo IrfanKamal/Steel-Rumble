@@ -13,7 +13,7 @@ public class MeleeWeapon : WeaponBase
     public ObjectPool heavyAttackParticlePool;
     public float heavyAttackRotationOffset;
     public Transform impactPoint;
-
+    public TrailRenderer trail;
 
     protected override void Start()
     {
@@ -52,8 +52,10 @@ public class MeleeWeapon : WeaponBase
     IEnumerator LightAttackDelay(float delay, float length)
     {
         yield return new WaitForSeconds(delay);
+        trail.enabled = true;
         damaging = true;
         yield return new WaitForSeconds(length);
+        trail.enabled = false;
         damaging = false;
         currentAttack = null;
     }

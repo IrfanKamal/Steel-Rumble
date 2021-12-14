@@ -15,8 +15,9 @@ public class MovementPlayer : MovementChar
 
     Camera cameraMain;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         cameraMain = Camera.main;
     }
 

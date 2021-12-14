@@ -30,8 +30,9 @@ public class MovementEnemy : MovementChar
         curBehaviour = coroutines.Count - 1;
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         playerScript = player.GetComponent<MovementPlayer>();
         playerScript.attack.AddListener(ReactAttack);

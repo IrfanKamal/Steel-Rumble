@@ -64,6 +64,8 @@ public class TutorialManager : MonoBehaviour
         enemy.transform.position = enemyInitPosition.position;
         playerHealth.currentHealth = playerHealth.health;
         enemyHealth.currentHealth = enemyHealth.health;
+        player.isDeath = false;
+        enemy.isDeath = false;
         enemyCollider.enabled = false;
     }
 

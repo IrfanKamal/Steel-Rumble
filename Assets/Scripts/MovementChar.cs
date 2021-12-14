@@ -17,6 +17,7 @@ public class MovementChar : MonoBehaviour
     public float attackSqCDTime;
     public string enemyTag;
     public float minimDistance;
+    public float particleYOffset = 1f;
     [Header("Weapon")]
     public WeaponBase weapon;
 
@@ -45,10 +46,12 @@ public class MovementChar : MonoBehaviour
     protected List<IEnumerator> coroutines;
     [HideInInspector]
     public bool interupable = true;
-    protected bool isDeath = false;
+    [HideInInspector]
+    public bool isDeath = false;
     protected int attackSq = 1;
     [HideInInspector]
     public UnityEvent<string> deathDone;
+    protected ObjectPool hitParticle, blockParticle;
 
     // Component
     [HideInInspector]
@@ -78,6 +81,22 @@ public class MovementChar : MonoBehaviour
         animator.SetFloat(moveSpeedPar, moveSpeedMulti);
         coroutines = new List<IEnumerator>() { null, null, null, null };
         CreateWeaponLocationDictionary();
+    }
+
+    protected virtual void Start()
+    {
+        foreach(GameObject pool in GameObject.FindGameObjectsWithTag("ObjectPool"))
+        {
+            ObjectPool script = pool.GetComponent<ObjectPool>();
+            if(script.objectName == "HitParticle")
+            {
+                hitParticle = script;
+            }
+            else if (script.objectName == "BlockParticle")
+            {
+                blockParticle = script;
+            }
+        }
     }
 
     // Create Dictionary for Weapon location
@@ -220,6 +239,9 @@ public class MovementChar : MonoBehaviour
             {
                 animator.SetTrigger(blockHitPar);
                 blockSound.Play();
+                GameObject particle = blockParticle.RequestObject();
+                particle.transform.position = new Vector3(transform.position.x, transform.position.y + particleYOffset, transform.position.z);
+                particle.SetActive(true);
             }
             else
             {
@@ -255,6 +277,9 @@ public class MovementChar : MonoBehaviour
             isDeath = true;
             animator.SetTrigger(deathPar);
         }
+        GameObject particle = hitParticle.RequestObject();
+        particle.transform.position = new Vector3(transform.position.x, transform.position.y + particleYOffset, transform.position.z);
+        particle.SetActive(true);
     }
 
     // Method for moving character when get damage
