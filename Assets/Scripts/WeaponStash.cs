@@ -10,6 +10,7 @@ public class WeaponStash : MonoBehaviour
     public List<WeaponBase> stashedWeapon;
     public GameObject buttonIcon;
     public Transform weaponLocation;
+    public GameObject menuGO;
     public float distance;
     bool assigned = true;
 
@@ -19,6 +20,7 @@ public class WeaponStash : MonoBehaviour
         if (stashedWeapon[0].user == null)
         {
             ReturnWeapon();
+            Time.timeScale = 0f;
         }
     }
 
