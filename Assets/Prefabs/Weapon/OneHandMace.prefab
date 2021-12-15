@@ -130,7 +130,7 @@ MonoBehaviour:
   attackDelay: 0f000000160000002200000035000000
   attackLength: 0a000000090000000a000000
   heavyAttackParticlePool: {fileID: 0}
-  heavyAttackRotationOffset: 0
+  heavyAttackRotationOffset: -90
   impactPoint: {fileID: 8662134426745086676}
   trail: {fileID: 104148081775769039}
 --- !u!1 &8662134426745086677
