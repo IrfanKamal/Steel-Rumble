@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/steel-rumble.unity
+    guid: 26d6406073e780b4b8d26e39a96de61c
   m_configObjects: {}
